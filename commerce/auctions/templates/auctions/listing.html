@@ -44,7 +44,7 @@
                             <p><b>Status:</b><span
                                     class="text-danger lead"> <strong>Sold</strong></span></p>
                         {% endif %}
-
+                        
                         {% if user == bid.user %}
                             {% if auction.winner is not None %}
                                 <h5 class="text-muted pt-3">{{ auction.bid_counter }} Bid(s) in total.
@@ -69,6 +69,17 @@
             {% if not auction.user == user %}
                 <form action="{% url 'update_bid' bid.id %}" method="POST">
                     {% csrf_token %}
+
+                    <h4>Previous Bids:</h4>
+                    <ul>
+                        {% for bid in bids %}
+                            <li>{{ bid.user.username }}: ₹{{ bid.amount }}</li>
+                        {% empty %}
+                            <li>No bids yet.</li>
+                        {% endfor %}
+                    </ul>
+
+                    
                     <div class="input-group mb-3">
                         {% if auction.winner is not None %}
                             {% if bid.user == user %}

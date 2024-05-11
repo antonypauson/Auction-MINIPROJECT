@@ -5,7 +5,6 @@ from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
-
 from .models import User, AuctionListing, Bid, Comment
 from .forms import AuctionListingForm, CommentForm
 
@@ -97,12 +96,14 @@ def insert(request):
 def listing(request, id):
     current = AuctionListing.objects.get(pk=id)
     bid = get_object_or_404(Bid, auction=current)
+    bids = Bid.objects.filter(auction=current).order_by('-created_at')
     comments = Comment.objects.filter(auction=current)
     print("here:" + AuctionListing.objects.get(pk=id).image.url)
     return render(request, 'auctions/listing.html', {
         'auction': current,
         'user': request.user,
         'bid': bid,
+        'bids': bids,
         'comments': comments,
         'comment_form': CommentForm()
     })
