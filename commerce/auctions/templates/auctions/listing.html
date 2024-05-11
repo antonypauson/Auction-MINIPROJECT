@@ -16,12 +16,15 @@
                     </div>
 
                     <div class="project-info-box">
-                        <p class="pt-4 pb-2 border-bottom"><b>Author: </b> {{ auction.user }}</p>
+                        <p class="pt-4 pb-2 border-bottom"><b>Seller: </b> {{ auction.user }}</p>
+                        {% if auction.end_time %}
+                        <p class="pt-1 pb-2 border-bottom"><b>End Time: </b> {{ auction.end_time }}</p>
+                        {% endif %}
                         <p class="pt-1 pb-2 border-bottom "><b>Current Bid: </b><span class="text-primary">
-                        ${{ bid.amount }}</span>
+                            ₹{{ bid.amount }}</span>
                         <p>
                             {% if auction.price %}
-                                <p class="pt-1 pb-2 border-bottom"><b>Price: </b>${{ auction.price }}
+                                <p class="pt-1 pb-2 border-bottom"><b>Price: </b>₹{{ auction.price }}
                                 </p>
                             {% else %}
                                 <p class="pt-1 pb-2 border-bottom"><b>Price: </b>Not Specified</p>
@@ -57,8 +60,8 @@
                 </div>
 
                 <div class="col-md-7">
-                    <img src="{{ auction.image_url }}" class="rounded pb-2"
-                         style="width: 100%; max-height: 500px; object-fit: contain;">
+                    <img src="{{ MEDIA_URL }}{{ auction.image.url }}" class="rounded pb-2"
+         style="width: 100%; max-height: 500px; object-fit: contain;">
                 </div>
             </div>
         </div>
@@ -73,22 +76,22 @@
                                     <button disabled class="btn bg-success disabled text-light" type="submit">Winner
                                     </button>
                                 </div>
-                                <input disabled type="number" min="{{ bid.amount }}" step="0.01" max="99999999999.99" class="form-control"
-                                       name="bid" placeholder="Your won with a bid of: ${{ bid.amount }}">
+                                <input disabled type="number" min="{{ bid.amount }}" step="10" max="9999999999" class="form-control"
+                                       name="bid" placeholder="Your won with a bid of:  ₹{{ bid.amount }}">
                             {% else %}
                                 <div class="input-group-prepend">
                                     <button disabled class="btn bg-danger disabled text-light" type="submit">Lot Sold
                                     </button>
                                 </div>
-                                <input disabled type="number" min="{{ bid.amount }}" step="0.01" max="99999999999.99" class="form-control"
-                                       name="bid" placeholder="Highest bid: ${{ bid.amount }}">
+                                <input disabled type="number" min="{{ bid.amount }}" step="10" max="99999999999" class="form-control"
+                                       name="bid" placeholder="Highest bid:  ₹{{ bid.amount }}">
                             {% endif %}
                         {% else %}
                             <div class="input-group-prepend">
                                 <button class="btn btn-outline-secondary bg-info text-light" type="submit">Bid Now!</button>
                             </div>
-                            <input required type="number" min="{{ bid.amount }}" step="0.01" max="99999999999.99" class="form-control"
-                                   name="bid" placeholder="Current Bid: ${{ bid.amount }}">
+                            <input required type="number" min="{{ bid.amount }}" step="10" max="99999999999" class="form-control"
+                                   name="bid" placeholder="Current Bid:  ₹{{ bid.amount }}">
                         {% endif %}
                     </div>
                 </form>
@@ -101,7 +104,7 @@
                             </button>
                         </div>
                         <input disabled type="text" class="form-control"
-                               placeholder="Last bid: {{ bid.user }} (${{ bid.amount }})">
+                               placeholder="Last bid: {{ bid.user }} (₹{{ bid.amount }})">
                     </div>
                 </form>
             {% endif %}

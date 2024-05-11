@@ -6,11 +6,11 @@
         <div class="container pb-5 mt-n2 mt-md-n3">
             <div class="row">
                 <div class="col-xl-9 col-md-8">
-                    <!-- Item-->
+                    
                     <div class="d-sm-flex justify-content-between my-4 pb-4 border-bottom">
                         <div class="media d-block d-sm-flex text-center text-sm-left">
                             <a class="cart-item-thumb mx-auto mr-sm-4" href="{% url 'listing' item.id %}">
-                                <img class="rounded" src="{{ item.image_url }}" alt="{{ item.title }}"
+                                <img src="{{ MEDIA_URL }}{{ item.image.url }}" alt="{{ item.title }}"
                                      style="width: 240px; height: 240px; object-fit: cover;">
                             </a>
                             <div class="media-body pt-1">
@@ -21,7 +21,7 @@
                                 Description: </span>{{ item.description }}
                                 </div>
                                 <div class="font-size-sm mb-1"><span class="text-muted mr-2">
-                                Author: </span>{{ item.user }}
+                                Seller: </span>{{ item.user }}
                                 </div>
                                 {% if item.category %}
                                     <div class="font-size-sm mb-1"><span class="text-muted mr-2">
@@ -33,14 +33,15 @@
                                     </div>
                                 {% endif %}
                                 {% if item.price %}
-                                    <div class="font-size-sm text-success mb-1"><span class="text-muted mr-2">Price: </span>${{ item.price }}</div>
+                                    <div class="font-size-sm text-success mb-1"><span class="text-muted mr-2">Price: </span>₹{{ item.price }}</div>
                                 {% else %}
                                     <div class="font-size-sm text-danger mb-1"><span class="text-muted mr-2">Price: </span>Not specified</div>
                                 {% endif %}
-                                {% if item.winner is None %}
+                                {% if item.active %}
                                     <div class="font-size-lg text-primary mb-1"><span class="text-muted mr-2">Status: </span>Available</div>
                                 {% else %}
                                     <div class="font-size-lg text-danger mb-1"><span class="text-muted mr-2">Status: </span>Sold</div>
+                                    <div class="font-size-lg text-success mb-1"><span class="text-muted mr-2">Winner: </span>{{ item.winner }}</div>
                                 {% endif %}
                                 <span class="text-muted">Created at: {{ item.created_at }} </span>
                                 {% if item in user.watchlist.all %}

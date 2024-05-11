@@ -78,29 +78,27 @@ def create(request):
 
 @login_required(login_url='auctions/login.html')
 def insert(request):
-    form = AuctionListingForm(request.POST)
-    if form.is_valid():
-        auction = AuctionListing(user=request.user, **form.cleaned_data)
-        if not auction.image_url:
-            auction.image_url = 'https://user-images.githubusercontent.com/52632898/161646398-6d49eca9-267f-4eab-a5a7-6ba6069d21df.png'
-        auction.save()
-        starting_bid = auction.starting_bid
-        bid = Bid(amount=starting_bid, user=request.user, auction=auction)
-        bid.save()
-        print("auction:" + auction.image_url)
-        return HttpResponseRedirect(reverse('index'))
-    else:
-        return render(request, 'auctions/create.html', {
-            'form': form,
-            'error': form.errors
-        })
-
+        if request.method == 'POST':
+            form = AuctionListingForm(request.POST, request.FILES)
+            if form.is_valid():
+                auction = form.save(commit=False)
+                auction.user = request.user
+                auction.end_time = form.cleaned_data['end_time']
+                auction.save()
+                starting_bid = auction.starting_bid
+                bid = Bid(amount=starting_bid, user=request.user, auction=auction)
+                bid.save()
+                print("auction:", str(auction.image))
+                return HttpResponseRedirect(reverse('index'))
+        else:
+            form = AuctionListingForm()
+        return render(request, 'auctions/create.html', {'form': form})
 
 def listing(request, id):
     current = AuctionListing.objects.get(pk=id)
     bid = get_object_or_404(Bid, auction=current)
     comments = Comment.objects.filter(auction=current)
-    print("here:" + AuctionListing.objects.get(pk=id).image_url)
+    print("here:" + AuctionListing.objects.get(pk=id).image.url)
     return render(request, 'auctions/listing.html', {
         'auction': current,
         'user': request.user,
